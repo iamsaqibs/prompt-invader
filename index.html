@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PromptInvader</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👾</text></svg>" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">PROMPT<span class="slash">//</span>INVADER <span class="tag">CTF</span></div>
+      <div class="topbar-right">
+        <span id="chip-model" class="chip chip-dim" hidden></span>
+        <span id="chip-stars" class="chip" hidden>★ 0/30</span>
+      </div>
+    </header>
+
+    <main id="app-main">
+      <!-- HOME -->
+      <section id="screen-home" class="screen">
+        <div class="home-hero">
+          <div class="glitch" data-text="BREAK THE MODEL">BREAK THE MODEL</div>
+          <p class="home-sub">
+            10 levels of prompt injection against a <b>real LLM running inside your browser</b>.
+            No server. No API key. The defenses are visible — you just have to get past them.
+          </p>
+          <div class="home-actions">
+            <button id="btn-jackin" class="btn btn-primary">▶ JACK IN</button>
+            <button id="btn-continue" class="btn" hidden>CONTINUE</button>
+          </div>
+          <div id="webgpu-warn" class="warn" hidden>
+            ⚠ This browser has no WebGPU. Use Chrome/Edge 113+, Safari 18+, or Firefox with WebGPU enabled.
+          </div>
+          <div class="home-meta">
+            <label class="radio-row"><input type="radio" name="model-pick" value="lite" />
+              <span><b>LITE</b> — small model (~0.5B, fast download)</span></label>
+            <label class="radio-row"><input type="radio" name="model-pick" value="std" checked />
+              <span><b>STANDARD</b> — ~1.5B, smarter defender, better game</span></label>
+          </div>
+          <p class="fineprint">Educational prompt-injection trainer modeled on the OWASP GenAI Top 10 (LLM01). All inference stays on your machine.</p>
+        </div>
+      </section>
+
+      <!-- LEVEL SELECT -->
+      <section id="screen-select" class="screen" hidden>
+        <h2 class="screen-title">SELECT NODE</h2>
+        <div id="level-grid" class="level-grid"></div>
+        <button id="btn-back-home" class="btn btn-ghost">◀ back</button>
+      </section>
+
+      <!-- LOADING -->
+      <section id="screen-load" class="screen" hidden>
+        <h2 class="screen-title">BOOTING ENGINE</h2>
+        <div class="load-console" id="load-console"></div>
+        <div class="loadbar"><div id="loadbar-fill"></div></div>
+        <p class="fineprint" id="load-note">First run downloads model weights, cached afterwards.</p>
+      </section>
+
+      <!-- GAME -->
+      <section id="screen-game" class="screen screen-game" hidden>
+        <div class="game-cols">
+          <aside class="panel panel-inspect">
+            <div class="panel-title">📋 TARGET SPEC <span class="chip" id="lv-codename"></span></div>
+            <div class="goal-box">
+              <div class="goal-label">YOUR MISSION</div>
+              <div id="lv-goal"></div>
+            </div>
+            <div class="panel-sub">SYSTEM PROMPT (defenses in plain view)</div>
+            <pre id="lv-prompt" class="sysprompt"></pre>
+          </aside>
+          <section class="panel panel-console">
+            <div class="panel-title">🕹 ATTACK CONSOLE</div>
+            <div id="chat-trans" class="chat-trans"></div>
+            <div class="attack-bar">
+              <textarea id="attack-input" rows="3" placeholder="inject here — ENTER to send, SHIFT+ENTER newline"></textarea>
+              <div class="attack-controls">
+                <span id="attempts-left" class="chip chip-dim"></span>
+                <button id="btn-hint" class="btn btn-mini">💡 hint</button>
+                <button id="btn-solution" class="btn btn-mini" title="Revealed after 4 failed attempts">🔓 solution</button>
+                <button id="btn-reset-hint" class="btn btn-mini">↺ reset level</button>
+                <button id="btn-send" class="btn btn-primary" style="margin-left:auto">▶ SEND</button>
+              </div>
+              <div id="hints-box" class="hints-box" hidden></div>
+            </div>
+          </section>
+        </div>
+        <div class="game-footer">
+          <button id="btn-to-select" class="btn btn-ghost">◀ nodes</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- WIN / LOSE MODAL -->
+  <div id="modal" hidden>
+    <div class="modal-card">
+      <div id="modal-title" class="modal-title"></div>
+      <div id="modal-body" class="modal-body"></div>
+      <div id="modal-actions" class="modal-actions"></div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
