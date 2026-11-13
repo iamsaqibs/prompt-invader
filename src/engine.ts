@@ -21,11 +21,22 @@ export function webgpuSupported(): boolean {
  */
 export function modelCandidates(): { lite: string[]; std: string[] } {
   const ids = webllm.prebuiltAppConfig.model_list.map((m) => m.model_id);
-  const pick = (...res: RegExp[]) =>
-    ids.filter((id) => res.some((re) => re.test(id)));
+  // Walk the patterns in priority order (not catalog order), so the first
+  // pattern wins whenever it matches anything.
+  const pick = (...res: RegExp[]) => [
+    ...new Set(res.flatMap((re) => ids.filter((id) => re.test(id)))),
+  ];
   return {
-    lite: pick(/Qwen2\.5-0\.5B-Instruct.*MLC$/, /SmolLM2-360M-Instruct.*MLC$/, /gemma-2-2b.*q4f16.*MLC$/),
-    std: pick(/Qwen2\.5-1\.5B-Instruct.*MLC$/, /Qwen2\.5-3B-Instruct.*MLC$/, /SmolLM2-1\.7B-Instruct.*MLC$/),
+    lite: pick(
+      /^Qwen2\.5-0\.5B-Instruct-q4f16_1-MLC$/,
+      /^SmolLM2-360M-Instruct-q4f16_1-MLC$/,
+      /^gemma-2-2b-it-q4f16_1-MLC$/,
+    ),
+    std: pick(
+      /^Qwen2\.5-1\.5B-Instruct-q4f16_1-MLC$/,
+      /^Qwen2\.5-3B-Instruct-q4f16_1-MLC$/,
+      /^SmolLM2-1\.7B-Instruct-q4f16_1-MLC$/,
+    ),
   };
 }
 
